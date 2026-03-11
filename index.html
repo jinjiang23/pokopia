@@ -1,0 +1,3001 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Pokopia 攻略百科</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#1a1a2e;--card:#16213e;--accent:#e94560;--accent2:#0f3460;--text:#eee;--text2:#aaa;--gold:#f5c518;--border:#2a2a4a}
+body{font-family:"Segoe UI",system-ui,-apple-system,sans-serif;background:var(--bg);color:var(--text);min-height:100vh}
+a{color:var(--accent);text-decoration:none}
+.header{background:linear-gradient(135deg,#0f3460,#e94560);padding:20px;text-align:center;position:sticky;top:0;z-index:100;box-shadow:0 4px 20px rgba(0,0,0,.5)}
+.header h1{font-size:1.8em;margin-bottom:4px;text-shadow:2px 2px 4px rgba(0,0,0,.5)}
+.header p{font-size:.9em;opacity:.85}
+.nav{display:flex;justify-content:center;gap:4px;padding:12px;background:var(--card);border-bottom:1px solid var(--border);flex-wrap:wrap}
+.nav button{background:transparent;color:var(--text2);border:2px solid transparent;padding:8px 16px;border-radius:20px;cursor:pointer;font-size:.9em;transition:all .2s}
+.nav button:hover{color:var(--text);border-color:var(--accent)}
+.nav button.active{background:var(--accent);color:#fff;border-color:var(--accent)}
+.search-bar{padding:16px;background:var(--card);border-bottom:1px solid var(--border)}
+.search-bar input{width:100%;padding:12px 16px;border-radius:24px;border:2px solid var(--border);background:var(--bg);color:var(--text);font-size:1em;outline:none;transition:border-color .2s}
+.search-bar input:focus{border-color:var(--accent)}
+.search-bar input::placeholder{color:var(--text2)}
+.filters{display:flex;gap:8px;padding:12px 16px;flex-wrap:wrap;background:var(--card);border-bottom:1px solid var(--border)}
+.filter-chip{padding:6px 14px;border-radius:16px;border:1px solid var(--border);background:transparent;color:var(--text2);cursor:pointer;font-size:.8em;transition:all .2s}
+.filter-chip:hover,.filter-chip.active{background:var(--accent2);color:var(--text);border-color:var(--accent2)}
+.content{padding:16px;max-width:1200px;margin:0 auto}
+.count{color:var(--text2);font-size:.85em;margin-bottom:12px}
+.grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
+.card{background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--border);cursor:pointer;transition:all .2s;display:flex;gap:12px;align-items:flex-start}
+.card:hover{border-color:var(--accent);transform:translateY(-2px);box-shadow:0 8px 24px rgba(233,69,96,.15)}
+.card-sprite{width:64px;height:64px;object-fit:contain;flex-shrink:0;filter:drop-shadow(0 2px 6px rgba(0,0,0,.4));border-radius:8px;background:rgba(255,255,255,.05)}
+.card-body{flex:1;min-width:0}
+.card-header{display:flex;align-items:center;gap:8px;margin-bottom:6px;flex-wrap:wrap}
+.card-id{font-size:.7em;color:var(--text2);background:var(--bg);padding:2px 6px;border-radius:6px}
+.card-name{font-size:1.05em;font-weight:bold}
+.card-name-en{font-size:.8em;color:var(--text2)}
+.card-types{display:flex;gap:4px;margin-bottom:6px;flex-wrap:wrap}
+.type-badge{font-size:.7em;padding:3px 8px;border-radius:10px;font-weight:bold;color:#fff}
+.card-info{font-size:.78em;color:var(--text2);line-height:1.8}
+.card-info span{color:var(--text)}
+.type-Normal{background:#A8A878}.type-Fire{background:#F08030}.type-Water{background:#6890F0}
+.type-Electric{background:#F8D030;color:#333}.type-Grass{background:#78C850}.type-Ice{background:#98D8D8;color:#333}
+.type-Fighting{background:#C03028}.type-Poison{background:#A040A0}.type-Ground{background:#E0C068;color:#333}
+.type-Flying{background:#A890F0}.type-Psychic{background:#F85888}.type-Bug{background:#A8B820;color:#333}
+.type-Rock{background:#B8A038}.type-Ghost{background:#705898}.type-Dragon{background:#7038F8}
+.type-Dark{background:#705848}.type-Steel{background:#B8B8D0;color:#333}.type-Fairy{background:#EE99AC;color:#333}
+.habitat-card{background:var(--card);border-radius:12px;padding:16px;border:1px solid var(--border);transition:all .2s;display:flex;gap:12px;align-items:flex-start;cursor:pointer}
+.habitat-card:hover{border-color:var(--gold);box-shadow:0 4px 16px rgba(245,197,24,.1)}
+.habitat-img{width:75px;height:75px;object-fit:cover;border-radius:8px;flex-shrink:0;background:rgba(255,255,255,.05)}
+.habitat-body{flex:1;min-width:0}
+.habitat-name{font-size:1em;font-weight:bold;margin-bottom:2px}
+.habitat-name-en{font-size:.8em;color:var(--text2)}
+.habitat-conditions{margin:8px 0;padding:8px 12px;background:var(--bg);border-radius:8px;font-size:.85em;line-height:1.6}
+.habitat-conditions strong{color:var(--gold)}
+.habitat-pokemon{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px}
+.pm{font-size:.75em;background:var(--accent2);padding:3px 8px;border-radius:8px;color:var(--text);display:inline-flex;align-items:center;gap:3px}
+.pm-img{width:20px;height:20px;vertical-align:middle}
+.habitat-region{font-size:.7em;color:var(--gold);margin-top:6px}
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:200;justify-content:center;align-items:center;padding:20px}
+.modal-overlay.show{display:flex}
+.modal{background:var(--card);border-radius:16px;max-width:500px;width:100%;max-height:85vh;overflow-y:auto;padding:24px;border:2px solid var(--accent);position:relative}
+.modal-close{position:absolute;top:12px;right:16px;font-size:1.5em;cursor:pointer;color:var(--text2);background:none;border:none}
+.modal-close:hover{color:var(--accent)}
+.modal h2{font-size:1.4em;margin-bottom:4px}
+.modal .zh-name{color:var(--text2);font-size:1em;margin-bottom:12px}
+.modal .detail-section{margin:12px 0;padding:10px;background:var(--bg);border-radius:8px}
+.modal .detail-section h3{font-size:.85em;color:var(--accent);margin-bottom:6px}
+.modal .detail-section p,.modal .detail-section li{font-size:.9em;line-height:1.6;color:var(--text2)}
+.modal .detail-section li{list-style:none;padding:2px 0}
+.modal-sprite{width:140px;height:140px;object-fit:contain;display:block;margin:0 auto 12px;filter:drop-shadow(0 4px 16px rgba(233,69,96,.3))}
+.modal-habitat-img{width:100%;max-height:200px;object-fit:cover;border-radius:10px;margin-bottom:12px}
+.info-page{max-width:800px;margin:0 auto;padding:24px;line-height:1.8}
+.info-page h2{color:var(--accent);margin:20px 0 8px;font-size:1.3em}
+.info-page h3{color:var(--gold);margin:16px 0 6px}
+.info-page ul{padding-left:20px}
+.info-page li{margin:4px 0;color:var(--text2)}
+.info-page p{color:var(--text2);margin:8px 0}
+.info-page .tip{background:var(--accent2);padding:12px 16px;border-radius:8px;margin:12px 0;border-left:3px solid var(--gold)}
+@media(max-width:600px){.header h1{font-size:1.3em}.grid{grid-template-columns:1fr}.nav button{padding:6px 12px;font-size:.8em}.card-sprite{width:48px;height:48px}}
+</style>
+</head>
+<body>
+<div class="header">
+  <h1>🏝️ Pokopia 攻略百科</h1>
+  <p>Pokémon Pokopia 宝可梦 · 栖息地 · 攻略指南</p>
+</div>
+<div class="nav" id="nav">
+  <button class="active" data-tab="pokemon">📖 宝可梦图鉴</button>
+  <button data-tab="habitats">🏕️ 栖息地</button>
+  <button data-tab="guide">💡 攻略指南</button>
+</div>
+<div id="tab-pokemon" class="tab-content">
+  <div class="search-bar"><input type="text" id="pokemon-search" placeholder="🔍 搜索宝可梦（中文名 / 英文名 / 属性 / 特长）..."></div>
+  <div class="filters" id="type-filters"></div>
+  <div class="content"><div class="count" id="pokemon-count"></div><div class="grid" id="pokemon-grid"></div></div>
+</div>
+<div id="tab-habitats" class="tab-content" style="display:none">
+  <div class="search-bar"><input type="text" id="habitat-search" placeholder="🔍 搜索栖息地（名称 / 材料 / 宝可梦）..."></div>
+  <div class="filters" id="region-filters"></div>
+  <div class="content"><div class="count" id="habitat-count"></div><div class="grid" id="habitat-grid"></div></div>
+</div>
+<div id="tab-guide" class="tab-content" style="display:none">
+  <div class="content info-page" id="guide-content"></div>
+</div>
+<div class="modal-overlay" id="modal">
+  <div class="modal" id="modal-body">
+    <button class="modal-close" id="modal-close">&times;</button>
+    <div id="modal-content"></div>
+  </div>
+</div>
+<script>
+var pokemonData = [
+  {
+    "id": 1,
+    "name": "Bulbasaur",
+    "nameZh": "妙蛙种子",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Tall grass",
+      "Bench with greenery"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 1,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/1.png"
+  },
+  {
+    "id": 2,
+    "name": "Ivysaur",
+    "nameZh": "妙蛙草",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Field of flowers",
+      "Bench with greenery"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 2,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/2.png"
+  },
+  {
+    "id": 3,
+    "name": "Venusaur",
+    "nameZh": "妙蛙花",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Field of flowers",
+      "Garden terrace"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 3,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/3.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/3.png"
+  },
+  {
+    "id": 4,
+    "name": "Charmander",
+    "nameZh": "小火龙",
+    "types": [
+      "Fire"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 4,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/4.png"
+  },
+  {
+    "id": 5,
+    "name": "Charmeleon",
+    "nameZh": "火恐龙",
+    "types": [
+      "Fire"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Campsite"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 5,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/5.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/5.png"
+  },
+  {
+    "id": 6,
+    "name": "Charizard",
+    "nameZh": "喷火龙",
+    "types": [
+      "Fire",
+      "Flying"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Tall grass",
+      "Berry-feast campsite"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 6,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/6.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/6.png"
+  },
+  {
+    "id": 7,
+    "name": "Squirtle",
+    "nameZh": "杰尼龟",
+    "types": [
+      "Water"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Tall grass",
+      "Hydrated tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 7,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/7.png"
+  },
+  {
+    "id": 8,
+    "name": "Wartortle",
+    "nameZh": "卡咪龟",
+    "types": [
+      "Water"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Hydrated tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 8,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/8.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/8.png"
+  },
+  {
+    "id": 9,
+    "name": "Blastoise",
+    "nameZh": "水箭龟",
+    "types": [
+      "Water"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Hydrated tall grass",
+      "Floating in the shade"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 9,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/9.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/9.png"
+  },
+  {
+    "id": 10,
+    "name": "Pidgey",
+    "nameZh": "波波",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Elevated tall grass",
+      "Pretty flower bed"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 16,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/16.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/16.png"
+  },
+  {
+    "id": 11,
+    "name": "Pidgeotto",
+    "nameZh": "比比鸟",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Elevated tall grass",
+      "Pretty flower bed"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 17,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/17.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/17.png"
+  },
+  {
+    "id": 12,
+    "name": "Oddish",
+    "nameZh": "走路草",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "specialty": [
+      "Grow"
+    ],
+    "habitats": [
+      "Tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 43,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/43.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/43.png"
+  },
+  {
+    "id": 13,
+    "name": "Gloom",
+    "nameZh": "臭臭花",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "specialty": [
+      "Grow"
+    ],
+    "habitats": [
+      "Tropical vibes"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 44,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/44.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/44.png"
+  },
+  {
+    "id": 14,
+    "name": "Vileplume",
+    "nameZh": "霸王花",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "specialty": [
+      "Grow"
+    ],
+    "habitats": [
+      "Chansey resting area"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 45,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/45.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/45.png"
+  },
+  {
+    "id": 15,
+    "name": "Bellsprout",
+    "nameZh": "喇叭芽",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "specialty": [
+      "Grow"
+    ],
+    "habitats": [
+      "Tree-shaded tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 69,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/69.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/69.png"
+  },
+  {
+    "id": 16,
+    "name": "Weepinbell",
+    "nameZh": "口呆花",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "specialty": [
+      "Grow"
+    ],
+    "habitats": [
+      "Flowery table"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 70,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/70.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/70.png"
+  },
+  {
+    "id": 17,
+    "name": "Victreebel",
+    "nameZh": "大食花",
+    "types": [
+      "Grass",
+      "Poison"
+    ],
+    "specialty": [
+      "Grow"
+    ],
+    "habitats": [
+      "Flowery table"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 71,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/71.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/71.png"
+  },
+  {
+    "id": 18,
+    "name": "Geodude",
+    "nameZh": "小拳石",
+    "types": [
+      "Rock",
+      "Ground"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 74,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/74.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/74.png"
+  },
+  {
+    "id": 19,
+    "name": "Graveler",
+    "nameZh": "隆隆石",
+    "types": [
+      "Rock",
+      "Ground"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Mossy boulder"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 75,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/75.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/75.png"
+  },
+  {
+    "id": 20,
+    "name": "Golem",
+    "nameZh": "隆隆岩",
+    "types": [
+      "Rock",
+      "Ground"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Mossy boulder"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 76,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/76.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/76.png"
+  },
+  {
+    "id": 21,
+    "name": "Venonat",
+    "nameZh": "毛球",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Illuminated tall grass",
+      "Illuminated bench"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 48,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/48.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/48.png"
+  },
+  {
+    "id": 22,
+    "name": "Venomoth",
+    "nameZh": "摩鲁蛾",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Illuminated tall grass",
+      "Illuminated bench"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 49,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/49.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/49.png"
+  },
+  {
+    "id": 23,
+    "name": "Slowpoke",
+    "nameZh": "呆呆兽",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Seaside tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 79,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/79.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/79.png"
+  },
+  {
+    "id": 24,
+    "name": "Slowbro",
+    "nameZh": "呆壳兽",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Seaside tall grass",
+      "Bed with a plush",
+      "Fishing pond"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 80,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/80.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/80.png"
+  },
+  {
+    "id": 25,
+    "name": "Slowking",
+    "nameZh": "呆呆王",
+    "types": [
+      "Water",
+      "Psychic"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Seaside tall grass",
+      "Bed with a plush",
+      "Fishing pond"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 199,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/199.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/199.png"
+  },
+  {
+    "id": 26,
+    "name": "Machop",
+    "nameZh": "腕力",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build",
+      "Gather"
+    ],
+    "habitats": [
+      "Boulder-shaded tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 66,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/66.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/66.png"
+  },
+  {
+    "id": 27,
+    "name": "Machoke",
+    "nameZh": "豪力",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build",
+      "Gather"
+    ],
+    "habitats": [
+      "Grassy training field",
+      "Box to the rhythm"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 67,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/67.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/67.png"
+  },
+  {
+    "id": 28,
+    "name": "Machamp",
+    "nameZh": "怪力",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build",
+      "Gather"
+    ],
+    "habitats": [
+      "Grassy training field",
+      "Clink-clang iron construction"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 68,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/68.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/68.png"
+  },
+  {
+    "id": 29,
+    "name": "Magnemite",
+    "nameZh": "小磁怪",
+    "types": [
+      "Electric",
+      "Steel"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Factory storage"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 81,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/81.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/81.png"
+  },
+  {
+    "id": 30,
+    "name": "Magneton",
+    "nameZh": "三合一磁怪",
+    "types": [
+      "Electric",
+      "Steel"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Trash can central"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 82,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/82.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/82.png"
+  },
+  {
+    "id": 31,
+    "name": "Magnezone",
+    "nameZh": "自爆磁怪",
+    "types": [
+      "Electric",
+      "Steel"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Trash can central"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 462,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/462.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/462.png"
+  },
+  {
+    "id": 32,
+    "name": "Scyther",
+    "nameZh": "飞天螳螂",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "specialty": [
+      "Cut"
+    ],
+    "habitats": [
+      "Tree-shaded tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 123,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/123.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/123.png"
+  },
+  {
+    "id": 33,
+    "name": "Scizor",
+    "nameZh": "巨钳螳螂",
+    "types": [
+      "Bug",
+      "Steel"
+    ],
+    "specialty": [
+      "Cut"
+    ],
+    "habitats": [
+      "Tree-shaded tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 212,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/212.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/212.png"
+  },
+  {
+    "id": 34,
+    "name": "Pinsir",
+    "nameZh": "凯罗斯",
+    "types": [
+      "Bug"
+    ],
+    "specialty": [
+      "Cut"
+    ],
+    "habitats": [
+      "Tree-shaded tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 127,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/127.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/127.png"
+  },
+  {
+    "id": 35,
+    "name": "Onix",
+    "nameZh": "大岩蛇",
+    "types": [
+      "Rock",
+      "Ground"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Smooth tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 95,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/95.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/95.png"
+  },
+  {
+    "id": 36,
+    "name": "Steelix",
+    "nameZh": "大钢蛇",
+    "types": [
+      "Steel",
+      "Ground"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Clink-clang iron construction"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 208,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/208.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/208.png"
+  },
+  {
+    "id": 37,
+    "name": "Hitmonlee",
+    "nameZh": "飞腿郎",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Urgent care"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 106,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/106.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/106.png"
+  },
+  {
+    "id": 38,
+    "name": "Hitmonchan",
+    "nameZh": "快拳郎",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Exercise resting spot"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 107,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/107.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/107.png"
+  },
+  {
+    "id": 39,
+    "name": "Hitmontop",
+    "nameZh": "战舞郎",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Gym first aid"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 237,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/237.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/237.png"
+  },
+  {
+    "id": 40,
+    "name": "Voltorb",
+    "nameZh": "雷电球",
+    "types": [
+      "Electric"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Park bench",
+      "Playing pirate"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 100,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/100.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/100.png"
+  },
+  {
+    "id": 41,
+    "name": "Electrode",
+    "nameZh": "顽皮雷弹",
+    "types": [
+      "Electric"
+    ],
+    "specialty": [
+      "Generate",
+      "Explode"
+    ],
+    "habitats": [
+      "Park bench",
+      "Playing pirate"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 101,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/101.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/101.png"
+  },
+  {
+    "id": 42,
+    "name": "Meowth",
+    "nameZh": "喵喵",
+    "types": [
+      "Normal"
+    ],
+    "specialty": [
+      "Trade"
+    ],
+    "habitats": [
+      "Resting spot",
+      "Working the register"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 52,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/52.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/52.png"
+  },
+  {
+    "id": 43,
+    "name": "Persian",
+    "nameZh": "猫老大",
+    "types": [
+      "Normal"
+    ],
+    "specialty": [
+      "Trade"
+    ],
+    "habitats": [
+      "Evil organization HQ"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 53,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/53.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/53.png"
+  },
+  {
+    "id": 44,
+    "name": "Growlithe",
+    "nameZh": "卡蒂狗",
+    "types": [
+      "Fire"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Perpetual mess",
+      "Resort meal prep"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 58,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/58.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/58.png"
+  },
+  {
+    "id": 45,
+    "name": "Arcanine",
+    "nameZh": "风速狗",
+    "types": [
+      "Fire"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Mini museum",
+      "Magma fishing spot"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 59,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/59.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/59.png"
+  },
+  {
+    "id": 46,
+    "name": "Farfetch'd",
+    "nameZh": "大葱鸭",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "specialty": [
+      "Cut"
+    ],
+    "habitats": [
+      "All packed up"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 83,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/83.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/83.png"
+  },
+  {
+    "id": 47,
+    "name": "Gastly",
+    "nameZh": "鬼斯",
+    "types": [
+      "Ghost",
+      "Poison"
+    ],
+    "specialty": [
+      "Dream Island"
+    ],
+    "habitats": [
+      "Spooky study"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 92,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/92.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/92.png"
+  },
+  {
+    "id": 48,
+    "name": "Haunter",
+    "nameZh": "鬼斯通",
+    "types": [
+      "Ghost",
+      "Poison"
+    ],
+    "specialty": [
+      "Dream Island"
+    ],
+    "habitats": [
+      "Spooky study"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 93,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/93.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/93.png"
+  },
+  {
+    "id": 49,
+    "name": "Magikarp",
+    "nameZh": "鲤鱼王",
+    "types": [
+      "Water"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Ocean fishing spot"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 129,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/129.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/129.png"
+  },
+  {
+    "id": 50,
+    "name": "Lapras",
+    "nameZh": "拉普拉斯",
+    "types": [
+      "Water",
+      "Ice"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Tropical seaside"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 131,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/131.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/131.png"
+  },
+  {
+    "id": 51,
+    "name": "Eevee",
+    "nameZh": "伊布",
+    "types": [
+      "Normal"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Pretty flower bed"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 133,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/133.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/133.png"
+  },
+  {
+    "id": 52,
+    "name": "Pichu",
+    "nameZh": "皮丘",
+    "types": [
+      "Electric"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Picnic set"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 172,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/172.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/172.png"
+  },
+  {
+    "id": 53,
+    "name": "Pikachu",
+    "nameZh": "皮卡丘",
+    "types": [
+      "Electric"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Picnic set"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 25,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/25.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/25.png"
+  },
+  {
+    "id": 54,
+    "name": "Raichu",
+    "nameZh": "雷丘",
+    "types": [
+      "Electric"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Nature's market"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 26,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/26.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/26.png"
+  },
+  {
+    "id": 55,
+    "name": "Hoothoot",
+    "nameZh": "咕咕",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Elevated tall grass",
+      "Pretty flower bed",
+      "Gently lit bed"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 163,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/163.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/163.png"
+  },
+  {
+    "id": 56,
+    "name": "Noctowl",
+    "nameZh": "猫头夜鹰",
+    "types": [
+      "Normal",
+      "Flying"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Elevated tall grass",
+      "Gently lit bed"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 164,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/164.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/164.png"
+  },
+  {
+    "id": 57,
+    "name": "Combee",
+    "nameZh": "三蜜蜂",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "specialty": [
+      "Litter"
+    ],
+    "habitats": [
+      "Pretty flower bed"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 4,
+    "natDex": 415,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/415.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/415.png"
+  },
+  {
+    "id": 58,
+    "name": "Vespiquen",
+    "nameZh": "蜂女王",
+    "types": [
+      "Bug",
+      "Flying"
+    ],
+    "specialty": [
+      "Gather Honey",
+      "Search"
+    ],
+    "habitats": [
+      "Field of flowers"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 4,
+    "natDex": 416,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/416.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/416.png"
+  },
+  {
+    "id": 59,
+    "name": "Drifloon",
+    "nameZh": "飘飘球",
+    "types": [
+      "Ghost",
+      "Flying"
+    ],
+    "specialty": [
+      "Dream Island"
+    ],
+    "habitats": [
+      "Riding warm updrafts",
+      "Bed with a plush",
+      "Plush central"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 4,
+    "natDex": 425,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/425.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/425.png"
+  },
+  {
+    "id": 60,
+    "name": "Gulpin",
+    "nameZh": "溶食兽",
+    "types": [
+      "Poison"
+    ],
+    "specialty": [
+      "Eat"
+    ],
+    "habitats": [
+      "Tantalizing dining set"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 3,
+    "natDex": 316,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/316.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/316.png"
+  },
+  {
+    "id": 61,
+    "name": "Drilbur",
+    "nameZh": "螺钉地鼠",
+    "types": [
+      "Ground"
+    ],
+    "specialty": [
+      "Dig"
+    ],
+    "habitats": [
+      "Fresh veggie field"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 5,
+    "natDex": 529,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/529.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/529.png"
+  },
+  {
+    "id": 62,
+    "name": "Excadrill",
+    "nameZh": "龙头地鼠",
+    "types": [
+      "Ground",
+      "Steel"
+    ],
+    "specialty": [
+      "Dig"
+    ],
+    "habitats": [
+      "Fresh veggie field"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 5,
+    "natDex": 530,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/530.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/530.png"
+  },
+  {
+    "id": 63,
+    "name": "Timburr",
+    "nameZh": "搬运小匠",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Boulder-shaded tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 5,
+    "natDex": 532,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/532.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/532.png"
+  },
+  {
+    "id": 64,
+    "name": "Gurdurr",
+    "nameZh": "铁骨土人",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Boulder-shaded tall grass",
+      "Large luggage carrier"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 5,
+    "natDex": 533,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/533.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/533.png"
+  },
+  {
+    "id": 65,
+    "name": "Conkeldurr",
+    "nameZh": "修建老匠",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Construction-site generator"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 5,
+    "natDex": 534,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/534.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/534.png"
+  },
+  {
+    "id": 66,
+    "name": "Heracross",
+    "nameZh": "赫拉克罗斯",
+    "types": [
+      "Bug",
+      "Fighting"
+    ],
+    "specialty": [
+      "Cut"
+    ],
+    "habitats": [
+      "Tree-shaded tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 214,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/214.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/214.png"
+  },
+  {
+    "id": 67,
+    "name": "Goomy",
+    "nameZh": "黏黏宝",
+    "types": [
+      "Dragon"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Tree-shaded flower bed",
+      "Rain Dance site"
+    ],
+    "time": "All day",
+    "weather": "Rain",
+    "gen": 6,
+    "natDex": 704,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/704.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/704.png"
+  },
+  {
+    "id": 68,
+    "name": "Sliggoo",
+    "nameZh": "黏美儿",
+    "types": [
+      "Dragon"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Hydrated tall grass"
+    ],
+    "time": "All day",
+    "weather": "Rain",
+    "gen": 6,
+    "natDex": 705,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/705.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/705.png"
+  },
+  {
+    "id": 69,
+    "name": "Illumise",
+    "nameZh": "甜甜萤",
+    "types": [
+      "Bug"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Hydrated flower bed"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 3,
+    "natDex": 314,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/314.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/314.png"
+  },
+  {
+    "id": 70,
+    "name": "Volbeat",
+    "nameZh": "电萤虫",
+    "types": [
+      "Bug"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Hydrated flower bed"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 3,
+    "natDex": 313,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/313.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/313.png"
+  },
+  {
+    "id": 71,
+    "name": "Cacnea",
+    "nameZh": "沙漠奈亚",
+    "types": [
+      "Grass"
+    ],
+    "specialty": [
+      "Grow"
+    ],
+    "habitats": [
+      "Sunny Day site"
+    ],
+    "time": "All day",
+    "weather": "Sun",
+    "gen": 3,
+    "natDex": 331,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/331.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/331.png"
+  },
+  {
+    "id": 72,
+    "name": "Cacturne",
+    "nameZh": "梦歌奈亚",
+    "types": [
+      "Grass",
+      "Dark"
+    ],
+    "specialty": [
+      "Grow"
+    ],
+    "habitats": [
+      "Tree-shaded flower bed"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 3,
+    "natDex": 332,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/332.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/332.png"
+  },
+  {
+    "id": 73,
+    "name": "Paras",
+    "nameZh": "派拉斯",
+    "types": [
+      "Bug",
+      "Grass"
+    ],
+    "specialty": [
+      "Grow"
+    ],
+    "habitats": [
+      "Elevated flower bed",
+      "Flower garden"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 46,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/46.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/46.png"
+  },
+  {
+    "id": 74,
+    "name": "Parasect",
+    "nameZh": "派拉斯特",
+    "types": [
+      "Bug",
+      "Grass"
+    ],
+    "specialty": [
+      "Grow"
+    ],
+    "habitats": [
+      "Elevated flower bed",
+      "Flower garden"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 47,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/47.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/47.png"
+  },
+  {
+    "id": 75,
+    "name": "Diglett",
+    "nameZh": "地鼠",
+    "types": [
+      "Ground"
+    ],
+    "specialty": [
+      "Dig"
+    ],
+    "habitats": [
+      "Tree-shaded red tall grass",
+      "Container snacking"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 50,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/50.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/50.png"
+  },
+  {
+    "id": 76,
+    "name": "Dugtrio",
+    "nameZh": "三地鼠",
+    "types": [
+      "Ground"
+    ],
+    "specialty": [
+      "Dig"
+    ],
+    "habitats": [
+      "Tree-shaded red tall grass",
+      "House party"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 51,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/51.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/51.png"
+  },
+  {
+    "id": 77,
+    "name": "Magby",
+    "nameZh": "鸭嘴宝宝",
+    "types": [
+      "Fire"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Pretty flower bed"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 240,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/240.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/240.png"
+  },
+  {
+    "id": 78,
+    "name": "Magmar",
+    "nameZh": "鸭嘴火兽",
+    "types": [
+      "Fire"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Digging and burning"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 126,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/126.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/126.png"
+  },
+  {
+    "id": 79,
+    "name": "Happiny",
+    "nameZh": "小福蛋",
+    "types": [
+      "Normal"
+    ],
+    "specialty": [
+      "Trade"
+    ],
+    "habitats": [
+      "Working the register",
+      "Alarm clock sleep zone"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 4,
+    "natDex": 440,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/440.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/440.png"
+  },
+  {
+    "id": 80,
+    "name": "Chansey",
+    "nameZh": "吉利蛋",
+    "types": [
+      "Normal"
+    ],
+    "specialty": [
+      "Trade"
+    ],
+    "habitats": [
+      "Full recovery"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 113,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/113.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/113.png"
+  },
+  {
+    "id": 81,
+    "name": "Electabuzz",
+    "nameZh": "电击兽",
+    "types": [
+      "Electric"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Trash can central",
+      "Light-up stage"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 125,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/125.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/125.png"
+  },
+  {
+    "id": 82,
+    "name": "Elekid",
+    "nameZh": "电击怪",
+    "types": [
+      "Electric"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Vending machine set"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 239,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/239.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/239.png"
+  },
+  {
+    "id": 83,
+    "name": "Electivire",
+    "nameZh": "电击魔兽",
+    "types": [
+      "Electric"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Vending machine set"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 4,
+    "natDex": 466,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/466.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/466.png"
+  },
+  {
+    "id": 84,
+    "name": "Audino",
+    "nameZh": "差不多娃娃",
+    "types": [
+      "Normal"
+    ],
+    "specialty": [
+      "Trade"
+    ],
+    "habitats": [
+      "Working the register"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 5,
+    "natDex": 531,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/531.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/531.png"
+  },
+  {
+    "id": 85,
+    "name": "Spinarak",
+    "nameZh": "圆丝蛛",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Yellow tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 167,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/167.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/167.png"
+  },
+  {
+    "id": 86,
+    "name": "Ariados",
+    "nameZh": "阿利多斯",
+    "types": [
+      "Bug",
+      "Poison"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Yellow tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 168,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/168.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/168.png"
+  },
+  {
+    "id": 87,
+    "name": "Zubat",
+    "nameZh": "超音蝠",
+    "types": [
+      "Poison",
+      "Flying"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Tree-shaded yellow tall grass",
+      "Park bench"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 41,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/41.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/41.png"
+  },
+  {
+    "id": 88,
+    "name": "Golbat",
+    "nameZh": "大嘴蝠",
+    "types": [
+      "Poison",
+      "Flying"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Tree-shaded yellow tall grass"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 1,
+    "natDex": 42,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/42.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/42.png"
+  },
+  {
+    "id": 89,
+    "name": "Crobat",
+    "nameZh": "叉字蝠",
+    "types": [
+      "Poison",
+      "Flying"
+    ],
+    "specialty": [
+      "Search"
+    ],
+    "habitats": [
+      "Elevated yellow tall grass",
+      "Trash disposal site"
+    ],
+    "time": "Nighttime",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 169,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/169.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/169.png"
+  },
+  {
+    "id": 90,
+    "name": "Makuhita",
+    "nameZh": "幕下力士",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Tree-shaded yellow tall grass",
+      "All packed up"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 3,
+    "natDex": 296,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/296.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/296.png"
+  },
+  {
+    "id": 91,
+    "name": "Hariyama",
+    "nameZh": "铁掌力士",
+    "types": [
+      "Fighting"
+    ],
+    "specialty": [
+      "Build"
+    ],
+    "habitats": [
+      "Tree-shaded yellow tall grass",
+      "All packed up"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 3,
+    "natDex": 297,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/297.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/297.png"
+  },
+  {
+    "id": 92,
+    "name": "Wingull",
+    "nameZh": "长翅鸥",
+    "types": [
+      "Water",
+      "Flying"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Elevated yellow tall grass",
+      "Windy flower bed"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 3,
+    "natDex": 278,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/278.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/278.png"
+  },
+  {
+    "id": 93,
+    "name": "Pelipper",
+    "nameZh": "大嘴鸥",
+    "types": [
+      "Water",
+      "Flying"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Elevated yellow tall grass",
+      "Windy flower bed"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 3,
+    "natDex": 279,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/279.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/279.png"
+  },
+  {
+    "id": 94,
+    "name": "Azurill",
+    "nameZh": "露力丽",
+    "types": [
+      "Normal",
+      "Fairy"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Hydrated yellow tall grass",
+      "Perpetual mess"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 3,
+    "natDex": 298,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/298.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/298.png"
+  },
+  {
+    "id": 95,
+    "name": "Marill",
+    "nameZh": "玛力露",
+    "types": [
+      "Water",
+      "Fairy"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Hydrated yellow tall grass",
+      "Dock"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 183,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/183.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/183.png"
+  },
+  {
+    "id": 96,
+    "name": "Azumarill",
+    "nameZh": "玛力露丽",
+    "types": [
+      "Water",
+      "Fairy"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Dock"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 184,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/184.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/184.png"
+  },
+  {
+    "id": 97,
+    "name": "Piplup",
+    "nameZh": "波加曼",
+    "types": [
+      "Water"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Hydrated yellow tall grass"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 4,
+    "natDex": 393,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/393.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/393.png"
+  },
+  {
+    "id": 98,
+    "name": "Prinplup",
+    "nameZh": "波皇子",
+    "types": [
+      "Water"
+    ],
+    "specialty": [
+      "Water"
+    ],
+    "habitats": [
+      "Hydrated yellow tall grass",
+      "Waterwheel spot"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 4,
+    "natDex": 394,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/394.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/394.png"
+  },
+  {
+    "id": 99,
+    "name": "Mareep",
+    "nameZh": "咩利羊",
+    "types": [
+      "Electric"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Overgrowth vending machine",
+      "Knitting station"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 179,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/179.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/179.png"
+  },
+  {
+    "id": 100,
+    "name": "Flaaffy",
+    "nameZh": "茸茸羊",
+    "types": [
+      "Electric"
+    ],
+    "specialty": [
+      "Generate"
+    ],
+    "habitats": [
+      "Knitting station"
+    ],
+    "time": "All day",
+    "weather": "All",
+    "gen": 2,
+    "natDex": 180,
+    "sprite": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/180.png",
+    "spriteSmall": "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/180.png"
+  }
+];
+var habitatData = [
+  {
+    "id": 1,
+    "name": "Tall grass",
+    "nameZh": "高草丛",
+    "conditions": "Tall grass x4",
+    "pokemon": [
+      "Bulbasaur",
+      "Charmander",
+      "Charizard",
+      "Squirtle",
+      "Oddish",
+      "Geodude"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4423971/dee0b00910ddee74eb7f5f9f510f4cd6.png/show"
+  },
+  {
+    "id": 2,
+    "name": "Tree-shaded tall grass",
+    "nameZh": "树荫高草丛",
+    "conditions": "Tall grass x4, Large Tree (any) x1",
+    "pokemon": [
+      "Bellsprout",
+      "Scyther",
+      "Scizor",
+      "Pinsir",
+      "Heracross"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4423956/e63a2a1800ceb7c833c468c11131104e.png/show"
+  },
+  {
+    "id": 3,
+    "name": "Boulder-shaded tall grass",
+    "nameZh": "巨石高草丛",
+    "conditions": "Tall grass x4, Large boulder x1",
+    "pokemon": [
+      "Timburr",
+      "Gurdurr",
+      "Machop"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4423970/3424780ef75b20a293a96327eb98730e.png/show"
+  },
+  {
+    "id": 4,
+    "name": "Hydrated tall grass",
+    "nameZh": "湿润高草丛",
+    "conditions": "Tall grass x4, Water x2",
+    "pokemon": [
+      "Squirtle",
+      "Wartortle",
+      "Blastoise",
+      "Sliggoo",
+      "Cramorant"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4431647/8482ea23489e50475a687ad424bbd1eb.png/show"
+  },
+  {
+    "id": 5,
+    "name": "Seaside tall grass",
+    "nameZh": "海边高草丛",
+    "conditions": "Tall grass x4, Ocean Water x2",
+    "pokemon": [
+      "Slowpoke",
+      "Slowbro",
+      "Slowking"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4431648/1fd6876bd66068d0b0dd614477027150.png/show"
+  },
+  {
+    "id": 6,
+    "name": "Elevated tall grass",
+    "nameZh": "高地高草丛",
+    "conditions": "Tall grass x4, High-up location x1",
+    "pokemon": [
+      "Pidgey",
+      "Pidgeotto",
+      "Hoothoot",
+      "Noctowl"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4433193/da9a7e810387fd50c14d1e755a5405ff.png/show"
+  },
+  {
+    "id": 7,
+    "name": "Illuminated tall grass",
+    "nameZh": "照明高草丛",
+    "conditions": "Tall Grass (any) x4, Lighting (any) x1",
+    "pokemon": [
+      "Venonat",
+      "Venomoth"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4431649/f95f3157d3df68f05acdad6d7d84e491.png/show"
+  },
+  {
+    "id": 8,
+    "name": "Pretty flower bed",
+    "nameZh": "美丽花坛",
+    "conditions": "Wildflowers x4",
+    "pokemon": [
+      "Pidgey",
+      "Pidgeotto",
+      "Hoothoot",
+      "Combee",
+      "Magby",
+      "Eevee"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4423958/ff1d96f0883af3346cfd7389c065c241.png/show"
+  },
+  {
+    "id": 9,
+    "name": "Tree-shaded flower bed",
+    "nameZh": "树荫花坛",
+    "conditions": "Wildflowers x4, Berry Tree (any) x1",
+    "pokemon": [
+      "Cacturne",
+      "Goomy",
+      "Vikavolt"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4431652/ff356a08c435f6dc19e71db341ad662f.png/show"
+  },
+  {
+    "id": 10,
+    "name": "Hydrated flower bed",
+    "nameZh": "湿润花坛",
+    "conditions": "Wildflowers x4, Water x2",
+    "pokemon": [
+      "Volbeat",
+      "Illumise"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4431653/86a344012795aee579f55f42a8093c77.png/show"
+  },
+  {
+    "id": 11,
+    "name": "Field of flowers",
+    "nameZh": "花海",
+    "conditions": "Wildflowers x8",
+    "pokemon": [
+      "Ivysaur",
+      "Venusaur",
+      "Vespiquen"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4431654/c000cd9770fba5c7edda44d93d351d9d.png/show"
+  },
+  {
+    "id": 12,
+    "name": "Elevated flower bed",
+    "nameZh": "高地花坛",
+    "conditions": "Wildflowers x4, High-up location x1",
+    "pokemon": [
+      "Paras",
+      "Parasect"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4433138/1e93316ffc65a195502dd5e3e8d2677f.png/show"
+  },
+  {
+    "id": 13,
+    "name": "Grave with flowers",
+    "nameZh": "鲜花坟墓",
+    "conditions": "Wildflowers x4, Gravestone x1",
+    "pokemon": [
+      "Cubone",
+      "Marowak"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4433188/aa5f2a01563b4d03f03342f4bab7ded6.png/show"
+  },
+  {
+    "id": 14,
+    "name": "Flower garden",
+    "nameZh": "花园",
+    "conditions": "Wildflowers x4, Hedge (any) x4",
+    "pokemon": [
+      "Paras",
+      "Parasect"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4433125/cf211339489f21158d0661336ded3d35.png/show"
+  },
+  {
+    "id": 15,
+    "name": "Fresh veggie field",
+    "nameZh": "菜园",
+    "conditions": "Vegetable field (any) x8",
+    "pokemon": [
+      "Drilbur",
+      "Excadrill"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4423954/5599935e337e36c684615fc890af74d0.png/show"
+  },
+  {
+    "id": 16,
+    "name": "Riding warm updrafts",
+    "nameZh": "乘热气流",
+    "conditions": "Campfire x3",
+    "pokemon": [
+      "Drifloon"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4431657/ef715a5359e7b53f0390fb306ae2e9f3.png/show"
+  },
+  {
+    "id": 17,
+    "name": "Campsite",
+    "nameZh": "营地",
+    "conditions": "Campfire x1, Straw stool x1, Straw table x1",
+    "pokemon": [
+      "Charmeleon"
+    ],
+    "region": "Withered Wasteland",
+    "image": "https://img.game8.co/4431660/3a3de83c4fb66b8fba0f4b16f8365a7c.png/show"
+  },
+  {
+    "id": 18,
+    "name": "Training waterfall",
+    "nameZh": "修行瀑布",
+    "conditions": "Seat (any) x1, Water x2, Waterfall x1",
+    "pokemon": [
+      "Tyrogue"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4433229/3094ae25af2ab5742c6b9a42f27ac03f.png/show"
+  },
+  {
+    "id": 19,
+    "name": "Tantalizing dining set",
+    "nameZh": "诱人餐桌",
+    "conditions": "Plated food x1, Seat (any) x1, Table (any) x1",
+    "pokemon": [
+      "Gulpin"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4431684/6c10faa301953ccd4cfb878fd1c6c162.png/show"
+  },
+  {
+    "id": 20,
+    "name": "Picnic set",
+    "nameZh": "野餐组合",
+    "conditions": "Picnic basket x1, Seat (any) x1, Table (any) x1",
+    "pokemon": [
+      "Pichu",
+      "Pikachu"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4434462/e444551ffc52be412b9b264bf461bc2c.png/show"
+  },
+  {
+    "id": 21,
+    "name": "Flowery table",
+    "nameZh": "花卉桌",
+    "conditions": "Small vase x1, Seat (any) x1, Table (any) x1",
+    "pokemon": [
+      "Weepinbell",
+      "Victreebel"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4431685/f1019185953c86d82c2b1326c5ac4ea4.png/show"
+  },
+  {
+    "id": 22,
+    "name": "Bench with greenery",
+    "nameZh": "绿荫长椅",
+    "conditions": "Hedge (any) x2, Seat (wide) x1",
+    "pokemon": [
+      "Bulbasaur",
+      "Ivysaur"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4432135/e913eec1acaf7b46beb3df19bf7dcf8f.png/show"
+  },
+  {
+    "id": 23,
+    "name": "Illuminated bench",
+    "nameZh": "照明长椅",
+    "conditions": "Streetlight (any) x1, Seat (wide) x1",
+    "pokemon": [
+      "Venonat",
+      "Venomoth"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4431686/4b2d71ebf675d591c35459000195c35f.png/show"
+  },
+  {
+    "id": 24,
+    "name": "Exercise resting spot",
+    "nameZh": "运动休息处",
+    "conditions": "Punching bag x1, Seat (any) x1",
+    "pokemon": [
+      "Hitmonchan"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4423959/bb0e7801e0457586c7128e33f894bd23.png/show"
+  },
+  {
+    "id": 25,
+    "name": "Urgent care",
+    "nameZh": "急救站",
+    "conditions": "First aid kit x1, Seat (any) x1, Table (any) x1",
+    "pokemon": [
+      "Hitmonlee"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4431689/5a6ec3f73c81665f9bfd6eebf47b6bf9.png/show"
+  },
+  {
+    "id": 27,
+    "name": "Road sign",
+    "nameZh": "路标",
+    "conditions": "Arrow sign x1, Wooden path x3",
+    "pokemon": [
+      "West Sea Shellos",
+      "East Sea Shellos"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4431693/c2db1a085cfcd1719a93e6f986642f8d.png/show"
+  },
+  {
+    "id": 28,
+    "name": "Large luggage carrier",
+    "nameZh": "行李搬运车",
+    "conditions": "Cart x1, Wooden crate x2",
+    "pokemon": [
+      "Gurdurr",
+      "Tinkatink",
+      "Tinkatuff"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4431694/763789b806bd1603da503d27aa46be1f.png/show"
+  },
+  {
+    "id": 29,
+    "name": "Lumberjack's workplace",
+    "nameZh": "伐木场",
+    "conditions": "Log chair x1, Cart x1, Log table x1, Tree stump (any) x1",
+    "pokemon": [
+      "Axew",
+      "Fraxure",
+      "Haxorus"
+    ],
+    "region": "Any"
+  },
+  {
+    "id": 30,
+    "name": "Bed with a plush",
+    "nameZh": "毛绒玩具床",
+    "conditions": "Bed (any) x1, Doll (any) x1",
+    "pokemon": [
+      "Slowbro",
+      "Slowking",
+      "Drifloon",
+      "Munchlax"
+    ],
+    "region": "Any",
+    "image": "https://img.game8.co/4433866/d29c2f6023d912be3fceb17b113df8ff.png/show"
+  },
+  {
+    "id": 50,
+    "name": "Yellow tall grass",
+    "nameZh": "黄色高草丛",
+    "conditions": "Yellow tall grass x4",
+    "pokemon": [
+      "Spinarak",
+      "Ariados",
+      "Grubbin"
+    ],
+    "region": "Bleak Beach",
+    "image": "https://img.game8.co/4431794/d6dc372cbd4d3a4ec0abf223365b8f38.png/show"
+  },
+  {
+    "id": 51,
+    "name": "Tree-shaded yellow tall grass",
+    "nameZh": "树荫黄色高草丛",
+    "conditions": "Yellow tall grass x4, Large tree (any) x1",
+    "pokemon": [
+      "Zubat",
+      "Golbat",
+      "Makuhita",
+      "Hariyama"
+    ],
+    "region": "Bleak Beach",
+    "image": "https://img.game8.co/4431796/5c0ef2aab8827f891f322a921051b49e.png/show"
+  },
+  {
+    "id": 52,
+    "name": "Elevated yellow tall grass",
+    "nameZh": "高地黄色高草丛",
+    "conditions": "Yellow tall grass x4, High-up location x1",
+    "pokemon": [
+      "Crobat",
+      "Wingull",
+      "Pelipper"
+    ],
+    "region": "Bleak Beach",
+    "image": "https://img.game8.co/4431799/4b4644ef8663141c463c915d0e9858ae.png/show"
+  },
+  {
+    "id": 53,
+    "name": "Hydrated yellow tall grass",
+    "nameZh": "湿润黄色高草丛",
+    "conditions": "Yellow tall grass x4, Water x2",
+    "pokemon": [
+      "Azurill",
+      "Marill",
+      "Piplup",
+      "Prinplup"
+    ],
+    "region": "Bleak Beach",
+    "image": "https://img.game8.co/4431803/368ef54f0960b7e1ee03fef21d6c73f0.png/show"
+  },
+  {
+    "id": 56,
+    "name": "Breezy flower bed",
+    "nameZh": "微风花坛",
+    "conditions": "Seashore flowers x4",
+    "pokemon": [
+      "Zorua",
+      "Zoroark",
+      "Pawmi"
+    ],
+    "region": "Bleak Beach",
+    "image": "https://img.game8.co/4431810/ed0cf6641105364def317046ff94f476.png/show"
+  },
+  {
+    "id": 57,
+    "name": "Tropical vibes",
+    "nameZh": "热带风情",
+    "conditions": "Seashore flowers x4, Large palm tree x1",
+    "pokemon": [
+      "Gloom",
+      "Exeggcute",
+      "Exeggutor"
+    ],
+    "region": "Bleak Beach",
+    "image": "https://img.game8.co/4431812/bb6b35885d2d75b28b279d0e3b84d286.png/show"
+  },
+  {
+    "id": 59,
+    "name": "Shaded beach",
+    "nameZh": "遮阴海滩",
+    "conditions": "Large palm tree x1, Beach chair x1",
+    "pokemon": [
+      "Exeggcute",
+      "Exeggutor"
+    ],
+    "region": "Bleak Beach",
+    "image": "https://img.game8.co/4431815/edf58194cd48b5b9ccb6baba8ce878fd.png/show"
+  },
+  {
+    "id": 60,
+    "name": "Tropical seaside",
+    "nameZh": "热带海滨",
+    "conditions": "Large palm tree x1, Ocean water x2, Hedge (any) x4",
+    "pokemon": [
+      "Lapras"
+    ],
+    "region": "Bleak Beach",
+    "image": "https://img.game8.co/4432152/623c9c783abcefc743c8ac30eb0f68e5.png/show"
+  },
+  {
+    "id": 98,
+    "name": "Red tall grass",
+    "nameZh": "红色高草丛",
+    "conditions": "Red tall grass x4",
+    "pokemon": [
+      "Kricketot",
+      "Kricketune",
+      "Riolu",
+      "Scorbunny",
+      "Cinderace"
+    ],
+    "region": "Rocky Ridges",
+    "image": "https://img.game8.co/4432175/3fc297463d9c0ca692802ccca4458ece.png/show"
+  },
+  {
+    "id": 99,
+    "name": "Tree-shaded red tall grass",
+    "nameZh": "树荫红色高草丛",
+    "conditions": "Red tall grass x4, Large tree (any) x1",
+    "pokemon": [
+      "Diglett",
+      "Dugtrio",
+      "Bonsly",
+      "Sudowoodo"
+    ],
+    "region": "Rocky Ridges",
+    "image": "https://img.game8.co/4432180/ab1a0a3d9ac853e10400a0a47bba64ed.png/show"
+  },
+  {
+    "id": 100,
+    "name": "Pointy tree-shaded rocky tall grass",
+    "nameZh": "尖树岩石高草丛",
+    "conditions": "Pointy tree x1, Large boulder x1, Red tall grass x4",
+    "pokemon": [
+      "Dartrix",
+      "Decidueye"
+    ],
+    "region": "Rocky Ridges",
+    "image": "https://img.game8.co/4432181/8c13c92629c9582c81659e8dcafc9018.png/show"
+  },
+  {
+    "id": 101,
+    "name": "Hydrated red tall grass",
+    "nameZh": "湿润红色高草丛",
+    "conditions": "Red tall grass x4, Water x2",
+    "pokemon": [
+      "Lotad",
+      "Lombre"
+    ],
+    "region": "Rocky Ridges",
+    "image": "https://img.game8.co/4432195/84001f6ea6528a4211bdc1f5ad987fe3.png/show"
+  },
+  {
+    "id": 103,
+    "name": "Grassy training field",
+    "nameZh": "草地训练场",
+    "conditions": "Red tall grass x4, Sandbags x2",
+    "pokemon": [
+      "Machoke",
+      "Machamp"
+    ],
+    "region": "Rocky Ridges",
+    "image": "https://img.game8.co/4432204/18517500589c65a50c649eca7c983f99.png/show"
+  },
+  {
+    "id": 104,
+    "name": "Graceful flower bed",
+    "nameZh": "优雅花坛",
+    "conditions": "Mountain flowers x4",
+    "pokemon": [
+      "Cleffa",
+      "Clefairy",
+      "Clefable",
+      "Fidough",
+      "Dachsbun"
+    ],
+    "region": "Rocky Ridges",
+    "image": "https://img.game8.co/4432208/6a0c60a54ca1ac519450d9744656e5dd.png/show"
+  },
+  {
+    "id": 115,
+    "name": "Piping-hot lava",
+    "nameZh": "滚烫熔岩",
+    "conditions": "Molten rock x1, Lava x2",
+    "pokemon": [
+      "Volcarona",
+      "Charcadet"
+    ],
+    "region": "Rocky Ridges",
+    "image": "https://img.game8.co/4432279/50cc36d18575bb0333a57cadd82a3660.png/show"
+  },
+  {
+    "id": 137,
+    "name": "Pink tall grass",
+    "nameZh": "粉色高草丛",
+    "conditions": "Pink tall grass x4",
+    "pokemon": [
+      "Trapinch",
+      "Vibrava",
+      "Flygon",
+      "Swablu",
+      "Duskull"
+    ],
+    "region": "Sparkling Skylands",
+    "image": "https://img.game8.co/4433926/46a9086d1e5cdd365af33246358e00a0.png/show"
+  },
+  {
+    "id": 138,
+    "name": "Tree-shaded pink tall grass",
+    "nameZh": "树荫粉色高草丛",
+    "conditions": "Pink tall grass x4, Large tree (any) x1",
+    "pokemon": [
+      "Pupitar",
+      "Dreepy",
+      "Drakloak",
+      "Sprigatito"
+    ],
+    "region": "Sparkling Skylands",
+    "image": "https://img.game8.co/4433932/96738ba06f2de90cb60406f57a56ea22.png/show"
+  },
+  {
+    "id": 139,
+    "name": "Hydrated pink tall grass",
+    "nameZh": "湿润粉色高草丛",
+    "conditions": "Pink tall grass x4, Water x2",
+    "pokemon": [
+      "Froakie",
+      "Frogadier",
+      "Greninja"
+    ],
+    "region": "Sparkling Skylands",
+    "image": "https://img.game8.co/4433938/1a68398ac71e664e0464c44ce4ab7716.png/show"
+  },
+  {
+    "id": 140,
+    "name": "Elevated pink tall grass",
+    "nameZh": "高地粉色高草丛",
+    "conditions": "Pink tall grass x4, High-up location x1",
+    "pokemon": [
+      "Corvisquire",
+      "Corviknight",
+      "Wattrel",
+      "Kilowattrel"
+    ],
+    "region": "Sparkling Skylands",
+    "image": "https://img.game8.co/4433946/605ea7c55ebcac57496bddab76d327a5.png/show"
+  },
+  {
+    "id": 142,
+    "name": "Fluffy flower bed",
+    "nameZh": "蓬松花坛",
+    "conditions": "Skyland flowers x4",
+    "pokemon": [
+      "Vulpix",
+      "Ninetales",
+      "Misdreavus",
+      "Mismagius",
+      "Rookidee"
+    ],
+    "region": "Sparkling Skylands",
+    "image": "https://img.game8.co/4433959/24ab7f18ea297818c3968fd52a82bcd9.png/show"
+  },
+  {
+    "id": 144,
+    "name": "Hydrated fluffy flower bed",
+    "nameZh": "湿润蓬松花坛",
+    "conditions": "Skyland flowers x4, Water x2",
+    "pokemon": [
+      "Poliwhirl",
+      "Dratini",
+      "Dragonair"
+    ],
+    "region": "Sparkling Skylands",
+    "image": "https://img.game8.co/4433967/63dce028739f10506f3466b90b7a609a.png/show"
+  },
+  {
+    "id": 145,
+    "name": "Waterside dinghy",
+    "nameZh": "水边小船",
+    "conditions": "Canoe x1, Duckweed x2, Water x2, High-up location x1",
+    "pokemon": [
+      "Dragonite"
+    ],
+    "region": "Sparkling Skylands",
+    "image": "https://img.game8.co/4433976/d601d5b8fc71ea94c98c9a7ddef3ec58.png/show"
+  }
+];
+
+// === Translation Maps ===
+var TN={"Normal":"普通","Fire":"火","Water":"水","Electric":"电","Grass":"草","Ice":"冰","Fighting":"格斗","Poison":"毒","Ground":"地面","Flying":"飞行","Psychic":"超能","Bug":"虫","Rock":"岩石","Ghost":"幽灵","Dragon":"龙","Dark":"恶","Steel":"钢","Fairy":"妖精"};
+var SN={"Build":"建造","Grow":"种植","Water":"浇水","Cut":"砍伐","Dig":"挖掘","Search":"搜索","Gather":"收集","Generate":"发电","Trade":"交易","Dream Island":"梦境岛","Eat":"进食","Litter":"乱丢","Gather Honey":"采蜜","Explode":"爆炸"};
+var SI={"Build":"🔨","Grow":"🌱","Water":"💧","Cut":"✂️","Dig":"⛏️","Search":"🔍","Gather":"🧺","Generate":"⚡","Trade":"💰","Dream Island":"💤","Eat":"🍽️","Litter":"🗑️","Gather Honey":"🍯","Explode":"💥"};
+var WN={"All":"全天候","Sun":"晴天","Rain":"雨天","Cloud":"多云"};
+var WI={"All":"🌤️","Sun":"☀️","Rain":"🌧️","Cloud":"☁️"};
+var TMN={"All day":"全天","Nighttime":"夜晚","Dawn":"黎明","Day":"白天","Dusk":"黄昏","Night":"夜晚"};
+var TI={"All day":"☀️🌙","Nighttime":"🌙","Dawn":"🌅","Day":"☀️","Dusk":"🌇","Night":"🌙"};
+var RN={"Withered Wasteland":"枯萎荒地","Bleak Beach":"萧瑟海滩","Rocky Ridges":"岩石山脊","Sparkling Skylands":"闪耀天空之地","Any":"通用"};
+var CN={"Tall grass":"高草丛","Tall Grass (any)":"高草丛(任意)","Yellow tall grass":"黄色高草丛","Red tall grass":"红色高草丛","Pink tall grass":"粉色高草丛","Large Tree (any)":"大树(任意)","Large tree (any)":"大树(任意)","Large boulder":"大岩石","Large palm tree":"大棕榈树","Pointy tree":"尖树","Water":"水","Ocean Water":"海水","Ocean water":"海水","High-up location":"高处","Lighting (any)":"照明(任意)","Streetlight (any)":"路灯(任意)","Wildflowers":"野花","Seashore flowers":"海岸花","Mountain flowers":"山花","Skyland flowers":"天空花","Hedge (any)":"绿篱(任意)","Berry Tree (any)":"树果树(任意)","Vegetable field (any)":"菜地(任意)","Campfire":"篝火","Straw stool":"草凳","Straw table":"草桌","Seat (any)":"座位(任意)","Seat (wide)":"长椅","Table (any)":"桌子(任意)","Plated food":"盘装食物","Picnic basket":"野餐篮","Small vase":"小花瓶","Punching bag":"沙袋","First aid kit":"急救箱","Arrow sign":"箭头指示牌","Wooden path":"木路","Cart":"推车","Wooden crate":"木箱","Log chair":"原木椅","Log table":"原木桌","Tree stump (any)":"树桩(任意)","Bed (any)":"床(任意)","Doll (any)":"娃娃(任意)","Gravestone":"墓碑","Canoe":"独木舟","Duckweed":"浮萍","Molten rock":"熔岩石","Sandbags":"沙袋","Lava":"熔岩","Waterfall":"瀑布","Beach chair":"海滩椅"};
+function tn(t){return TN[t]||t}
+function sn(s){return SN[s]||s}
+function si(s){return SI[s]||""}
+function wn(w){return WN[w]||w}
+function wi(w){return WI[w]||""}
+function tmn(t){return TMN[t]||t}
+function ti(t){return TI[t]||""}
+function rn(r){return RN[r]||r}
+function cn(s){var parts=s.split(", ");return parts.map(function(p){var m=p.match(/^(.+?)( x\d+)$/);var name=m?m[1].trim():p.trim();var qty=m?m[2]:"";return (CN[name]||name)+qty}).join(", ")}
+
+// === State ===
+var activeTab="pokemon",activeType=null,activeRegion=null;
+
+// === Tabs ===
+document.querySelectorAll(".nav button").forEach(function(b){b.addEventListener("click",function(){document.querySelectorAll(".nav button").forEach(function(x){x.classList.remove("active")});b.classList.add("active");activeTab=b.dataset.tab;document.querySelectorAll(".tab-content").forEach(function(t){t.style.display="none"});document.getElementById("tab-"+activeTab).style.display="block";if(activeTab==="guide")renderGuide()})});
+
+// === Type Filters ===
+var allTypes=[...new Set(pokemonData.flatMap(function(p){return p.types}))].sort();
+var tf=document.getElementById("type-filters");
+allTypes.forEach(function(t){var c=document.createElement("button");c.className="filter-chip";c.textContent=tn(t);c.addEventListener("click",function(){if(activeType===t){activeType=null;c.classList.remove("active")}else{document.querySelectorAll("#type-filters .filter-chip").forEach(function(x){x.classList.remove("active")});activeType=t;c.classList.add("active")}renderPokemon()});tf.appendChild(c)});
+
+// === Region Filters ===
+var allRegions=[...new Set(habitatData.map(function(h){return h.region}))].sort();
+var rf=document.getElementById("region-filters");
+allRegions.forEach(function(r){var c=document.createElement("button");c.className="filter-chip";c.textContent=rn(r);c.addEventListener("click",function(){if(activeRegion===r){activeRegion=null;c.classList.remove("active")}else{document.querySelectorAll("#region-filters .filter-chip").forEach(function(x){x.classList.remove("active")});activeRegion=r;c.classList.add("active")}renderHabitats()});rf.appendChild(c)});
+
+// === Render Pokemon ===
+function renderPokemon(){
+  var q=document.getElementById("pokemon-search").value.toLowerCase();
+  var g=document.getElementById("pokemon-grid");
+  var f=pokemonData.filter(function(p){
+    var ms=!q||p.name.toLowerCase().includes(q)||p.nameZh.includes(q)||p.types.some(function(t){return t.toLowerCase().includes(q)||tn(t).includes(q)})||p.specialty.some(function(s){return s.toLowerCase().includes(q)||sn(s).includes(q)})||p.habitats.some(function(h){return h.toLowerCase().includes(q)});
+    var mt=!activeType||p.types.includes(activeType);
+    return ms&&mt;
+  });
+  document.getElementById("pokemon-count").textContent="显示 "+f.length+" / "+pokemonData.length+" 只宝可梦";
+  g.innerHTML=f.map(function(p){
+    var spriteHtml=p.sprite?'<img class="card-sprite" src="'+p.sprite+'" alt="" loading="lazy">':"";
+    var typesHtml=p.types.map(function(t){return '<span class="type-badge type-'+t+'">'+tn(t)+'</span>'}).join("");
+    var specHtml=p.specialty.map(function(s){return si(s)+" "+sn(s)}).join(", ");
+    return '<div class="card" onclick="showDetail('+p.id+')">'+spriteHtml+'<div class="card-body"><div class="card-header"><span class="card-id">#'+String(p.id).padStart(3,"0")+'</span><span class="card-name">'+p.nameZh+'</span><span class="card-name-en">'+p.name+'</span></div><div class="card-types">'+typesHtml+'</div><div class="card-info">特长: <span>'+specHtml+'</span><br>'+ti(p.time)+' '+tmn(p.time)+' · '+wi(p.weather)+' '+wn(p.weather)+'</div></div></div>';
+  }).join("");
+}
+
+// === Render Habitats ===
+function renderHabitats(){
+  var q=document.getElementById("habitat-search").value.toLowerCase();
+  var g=document.getElementById("habitat-grid");
+  var pMap={};var sprMap={};
+  pokemonData.forEach(function(p){pMap[p.name]=p.nameZh;if(p.spriteSmall)sprMap[p.name]=p.spriteSmall});
+  var f=habitatData.filter(function(h){
+    var ms=!q||h.name.toLowerCase().includes(q)||h.nameZh.includes(q)||h.conditions.toLowerCase().includes(q)||h.pokemon.some(function(p){return p.toLowerCase().includes(q)||(pMap[p]||"").includes(q)});
+    var mr=!activeRegion||h.region===activeRegion;
+    return ms&&mr;
+  });
+  document.getElementById("habitat-count").textContent="显示 "+f.length+" / "+habitatData.length+" 个栖息地";
+  g.innerHTML=f.map(function(h){
+    var pmHtml=h.pokemon.map(function(p){
+      var img=sprMap[p]?'<img class="pm-img" src="'+sprMap[p]+'" loading="lazy">':"";
+      return '<span class="pm">'+img+(pMap[p]||p)+'</span>';
+    }).join("");
+    return '<div class="habitat-card" onclick="showHabitatDetail('+h.id+')">'+(h.image?'<img class="habitat-img" src="'+h.image+'" alt="" loading="lazy">':'')+'<div class="habitat-body"><div class="habitat-name">#'+String(h.id).padStart(3,"0")+' '+h.nameZh+'</div><div class="habitat-name-en">'+h.name+'</div><div class="habitat-conditions"><strong>🔧 建造条件:</strong> '+cn(h.conditions)+'</div><div class="habitat-pokemon">'+pmHtml+'</div><div class="habitat-region">📍 '+rn(h.region)+'</div></div></div>';
+  }).join("");
+}
+
+// === Detail Modal ===
+function showDetail(id){
+  var p=pokemonData.find(function(x){return x.id===id});
+  if(!p)return;
+  var spriteHtml=p.sprite?'<img class="modal-sprite" src="'+p.sprite+'" alt="'+p.nameZh+'">':"";
+  var typesHtml=p.types.map(function(t){return '<span class="type-badge type-'+t+'">'+tn(t)+'</span>'}).join("");
+  var specHtml=p.specialty.map(function(s){return si(s)+" "+sn(s)}).join(", ");
+  // Build habitat list with Chinese names, images, and click-to-detail
+  var hMap={};habitatData.forEach(function(h){h.pokemon.forEach(function(pm){if(!hMap[pm])hMap[pm]=[];hMap[pm].push(h)})});
+  var matchedHabitats=hMap[p.name]||[];
+  var habitatsHtml=matchedHabitats.length>0?matchedHabitats.map(function(h){
+    var img=h.image?'<img style="width:40px;height:40px;object-fit:cover;border-radius:6px;flex-shrink:0" src="'+h.image+'" loading="lazy">':"";
+    return '<div style="display:flex;align-items:center;gap:8px;background:var(--bg);padding:6px 10px;border-radius:8px;margin:4px 0;cursor:pointer" onclick="event.stopPropagation();document.getElementById(\'modal\').classList.remove(\'show\');setTimeout(function(){showHabitatDetail('+h.id+')},200)">'+img+'<div><div style="font-size:.85em;color:var(--text)">'+h.nameZh+'</div><div style="font-size:.7em;color:var(--text2)">#'+String(h.id).padStart(3,"0")+' '+h.name+'</div></div></div>';
+  }).join(""):'<p style="color:var(--text2)">'+p.habitats.join(", ")+'</p>';
+  document.getElementById("modal-content").innerHTML=spriteHtml+'<h2>'+p.nameZh+' <span style="color:var(--text2);font-size:.7em">#'+String(p.id).padStart(3,"0")+'</span></h2><div class="zh-name">'+p.name+' · 第'+p.gen+'世代</div><div style="display:flex;gap:4px;margin:8px 0">'+typesHtml+'</div><div class="detail-section"><h3>⚡ 特长</h3><p>'+specHtml+'</p></div><div class="detail-section"><h3>🏕️ 栖息地</h3>'+habitatsHtml+'</div><div class="detail-section"><h3>⏰ 出现条件</h3><p>'+ti(p.time)+' 时间: '+tmn(p.time)+'<br>'+wi(p.weather)+' 天气: '+wn(p.weather)+'</p></div>';
+  document.getElementById("modal").classList.add("show");
+}
+
+// === Habitat Detail Modal ===
+function showHabitatDetail(id){
+  var h=habitatData.find(function(x){return x.id===id});
+  if(!h)return;
+  var pMap={};var sprMap={};
+  pokemonData.forEach(function(p){pMap[p.name]=p.nameZh;if(p.sprite)sprMap[p.name]=p.sprite;});
+  var imgHtml=h.image?'<img class="modal-habitat-img" src="'+h.image+'" alt="'+h.nameZh+'">':"";
+  var pmHtml=h.pokemon.map(function(p){
+    var spr=sprMap[p]?'<img style="width:40px;height:40px;object-fit:contain;vertical-align:middle" src="'+sprMap[p]+'" loading="lazy">':"";
+    return '<div style="display:inline-flex;align-items:center;gap:6px;background:var(--bg);padding:4px 10px;border-radius:8px;margin:3px;cursor:pointer" onclick="event.stopPropagation();findPokemonByName(\''+p.replace(/'/g,"\\'")+'\')">' + spr + '<span style="font-size:.85em">'+(pMap[p]||p)+'</span></div>';
+  }).join("");
+  var condHtml=cn(h.conditions).split(", ").map(function(c){return "<li>"+c+"</li>"}).join("");
+  document.getElementById("modal-content").innerHTML=imgHtml+'<h2>'+h.nameZh+' <span style="color:var(--text2);font-size:.7em">#'+String(h.id).padStart(3,"0")+'</span></h2><div class="zh-name">'+h.name+'</div><div class="detail-section"><h3>🔧 建造条件</h3><ul style="list-style:none;padding:0">'+condHtml+'</ul></div><div class="detail-section"><h3>🐾 可吸引的宝可梦</h3><div style="display:flex;flex-wrap:wrap;gap:4px">'+pmHtml+'</div></div><div class="detail-section"><h3>📍 区域</h3><p>'+rn(h.region)+'</p></div>';
+  document.getElementById("modal").classList.add("show");
+}
+
+// === Find Pokemon by name (from habitat detail) ===
+function findPokemonByName(name){
+  var p=pokemonData.find(function(x){return x.name===name});
+  if(p){document.getElementById("modal").classList.remove("show");setTimeout(function(){showDetail(p.id)},200);}
+}
+
+// === Guide ===
+function renderGuide(){
+  document.getElementById("guide-content").innerHTML='<h2>🎮 Pokémon Pokopia 新手攻略</h2><p>在 Pokopia 中，你扮演一只变身为人类的百变怪（Ditto），通过建造栖息地来吸引宝可梦，逐步恢复这个末日后的世界。</p><h2>📋 核心机制</h2><h3>栖息地系统</h3><ul><li>将特定物品放在一起会形成栖息地</li><li>不同栖息地吸引不同的宝可梦</li><li>地面上的闪光点可以发现宝可梦的痕迹，获得栖息地提示</li><li>宝可梦中心终端可以购买栖息地提示</li></ul><h3>时间与天气</h3><ul><li>游戏的昼夜周期与 Switch 2 系统时间同步</li><li>部分宝可梦只在特定时间和天气出现</li></ul><h3>宝可梦不会进化！</h3><div class="tip"><strong>⚠️ 重要：</strong>Pokopia 中没有进化系统。每种宝可梦只能遇到一只并成为朋友。</div><h3>宝可梦特长</h3><ul><li>🔨 <strong>建造</strong> - 帮助建造设施</li><li>🌱 <strong>种植</strong> - 种植花草</li><li>💧 <strong>浇水</strong> - 浇水</li><li>✂️ <strong>砍伐</strong> - 砍伐</li><li>⛏️ <strong>挖掘</strong> - 挖掘</li><li>🔍 <strong>搜索</strong> - 搜索物品</li><li>🧺 <strong>收集</strong> - 收集材料</li><li>⚡ <strong>发电</strong> - 发电</li><li>💰 <strong>交易</strong> - 交易</li></ul><h2>🗺️ 四大区域</h2><h3>Withered Wasteland（枯萎荒地）</h3><p>起始区域。绿色草丛 + 粉色野花。御三家都在这里。</p><h3>Bleak Beach（萧瑟海滩）</h3><p>黄色草丛 + 海岸花卉。水系和飞行系宝可梦的家园。</p><h3>Rocky Ridges（岩石山脊）</h3><p>红色草丛 + 山花。格斗系、岩石系宝可梦的家园。</p><h3>Sparkling Skylands（闪耀天空之地）</h3><p>粉色草丛 + 天空花卉。龙系和稀有宝可梦出没。</p><h2>🔗 有用链接</h2><ul><li><a href="https://pokemon-pokopia.fandom.com/" target="_blank">Pokopia Wiki (Fandom)</a></li><li><a href="https://game8.co/games/Pokemon-Pokopia" target="_blank">Game8 攻略站</a></li><li><a href="https://www.serebii.net/pokemonpokopia/" target="_blank">Serebii.net</a></li></ul><p style="margin-top:24px;color:var(--text2);font-size:.85em;text-align:center">数据持续更新中 · 共收录 '+pokemonData.length+' 只宝可梦 / '+habitatData.length+' 个栖息地<br>最后更新: 2026-03-11</p>';
+}
+
+// === Events ===
+document.getElementById("modal-close").addEventListener("click",function(){document.getElementById("modal").classList.remove("show")});
+document.getElementById("modal").addEventListener("click",function(e){if(e.target===e.currentTarget)document.getElementById("modal").classList.remove("show")});
+document.getElementById("pokemon-search").addEventListener("input",renderPokemon);
+document.getElementById("habitat-search").addEventListener("input",renderHabitats);
+renderPokemon();
+renderHabitats();
+</script>
+</body>
+</html>
